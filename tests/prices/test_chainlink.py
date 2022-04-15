@@ -123,26 +123,46 @@ def test_chainlink_get_feed(token):
     assert chainlink.get_feed(token.lower()) != ZERO_ADDRESS
     assert chainlink.get_feed(convert.to_address(token)) != ZERO_ADDRESS
 
+@pytest.mark.parametrize('token', FEEDS)
+def test_chainlink_contains(token):
+    """
+    Tests `token in chainlink` with both lowercase address and checksum address.
+    """
+    for token in [token.lower(), convert.to_address(token)]:
+        assert token in chainlink
+
+
+@pytest.mark.parametrize('token', FEEDS)
+def test_chainlink_get_feed(token):
+    """
+    Tests `chainlink.get_feed` with both lowercase address and checksum address.
+    """
+    for token in [token.lower(), convert.to_address(token)]:
+        assert chainlink.get_feed(token) != ZERO_ADDRESS
+
 
 @pytest.mark.parametrize('token', FEEDS)
 def test_chainlink_latest(token):
-    price = chainlink.get_price(token)
-    print(price)
-    assert price, 'no feed available'
+    for token in [token.lower(), convert.to_address(token)]:
+        price = chainlink.get_price(token)
+        print(price)
+        assert price, 'no feed available'
 
 
 @mainnet_only
 @pytest.mark.parametrize('token', FEEDS)
 def test_chainlink_before_registry(token):
-    BLOCK = 12_800_000
+    test_block = 12800000
     feed = chainlink.get_feed(token)
-    if contract_creation_block(feed.address) > BLOCK:
-        pytest.skip('Not applicable to feeds deployed after registry')
-    price = chainlink.get_price(token, block=BLOCK)
+    if contract_creation_block(feed.address) > test_block:
+        pytest.skip('Not applicable to feeds deployed after test block.')
+    price = chainlink.get_price(token, block=test_block)
     assert price, 'no feed available'
 
 
 def test_chainlink_nonexistent():
+    with pytest.raises(KeyError):
+        chainlink.get_feed(ZERO_ADDRESS)
     price = chainlink.get_price(ZERO_ADDRESS)
     assert price is None
 
