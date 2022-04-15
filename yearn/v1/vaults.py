@@ -104,7 +104,7 @@ class VaultV1:
         if hasattr(strategy, "earned"):
             attrs["lifetime earned"] = [strategy, "earned"]  # /scale
 
-        if strategy._name == "StrategyYFIGovernance":
+        if strategy and strategy._name == "StrategyYFIGovernance":
             ygov = interface.YearnGovernance(strategy.gov())
             attrs["earned"] = [ygov, "earned", strategy]
             attrs["reward rate"] = [ygov, "rewardRate"]
