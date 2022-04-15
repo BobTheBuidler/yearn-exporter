@@ -152,11 +152,11 @@ def test_chainlink_latest(token):
 @mainnet_only
 @pytest.mark.parametrize('token', FEEDS)
 def test_chainlink_before_registry(token):
-    BLOCK = 12_800_000
+    test_block = 12800000
     feed = chainlink.get_feed(token)
-    if contract_creation_block(feed.address) > BLOCK:
-        pytest.skip('Not applicable to feeds deployed after registry')
-    price = chainlink.get_price(token, block=BLOCK)
+    if contract_creation_block(feed.address) > test_block:
+        pytest.skip('Not applicable to feeds deployed after test block.')
+    price = chainlink.get_price(token, block=test_block)
     assert price, 'no feed available'
 
 
