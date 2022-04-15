@@ -96,10 +96,10 @@ class Chainlink(metaclass=Singleton):
         self.feeds.update(ADDITIONAL_FEEDS[chain.id])
         logger.info(f'loaded {len(self.feeds)} feeds')
 
-    def get_feed(self, asset: Address) -> Contract:
+    def get_feed(self, asset: AddressOrContract) -> Contract:
         return contract(self.feeds[convert.to_address(asset)])
 
-    def __contains__(self, asset):
+    def __contains__(self, asset: AddressOrContract) -> bool:
         return convert.to_address(asset) in self.feeds
 
     @ttl_cache(maxsize=None, ttl=600)
@@ -107,7 +107,7 @@ class Chainlink(metaclass=Singleton):
         if asset == ZERO_ADDRESS:
             return None
         try:
-            return self.get_feed(asset).latestAnswer(block_identifier=block) / 1e8
+            return self.get_feed(convert.to_address(asset)).latestAnswer(block_identifier=block) / 1e8
         except ValueError:
             return None
 
