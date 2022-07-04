@@ -159,6 +159,21 @@ services:
       - victoria-metrics
       - postgres
 
+  treasury-transactions-exporter:
+    image: yearn-exporter
+    command: treasury_transactions_exporter
+    volumes: *common-volumes
+    environment:
+      <<: *common-envs
+      <<: *common-eth-envs
+      <<: *common-historical-envs
+      <<: *common-postgres-envs
+    networks:
+      - yearn-exporter
+    restart: on-failure
+    depends_on:
+      - postgres
+
   gnosis-treasury-exporter:
     image: yearn-exporter
     command: treasury_exporter
@@ -190,6 +205,20 @@ services:
       - victoria-metrics
       - postgres
 
+  gnosis-treasury-transactions-exporter:
+    image: yearn-exporter
+    command: treasury_transactions_exporter
+    volumes: *common-volumes
+    environment:
+      <<: *common-envs
+      <<: *common-gnosis-envs
+      <<: *common-postgres-envs
+    networks:
+      - yearn-exporter
+    restart: on-failure
+    depends_on:
+      - postgres
+
   ftm-treasury-exporter:
     image: yearn-exporter
     command: treasury_exporter
@@ -219,6 +248,20 @@ services:
     restart: on-failure
     depends_on:
       - victoria-metrics
+      - postgres
+
+  ftm-treasury-transactions-exporter:
+    image: yearn-exporter
+    command: treasury_transactions_exporter
+    volumes: *common-volumes
+    environment:
+      <<: *common-envs
+      <<: *common-ftm-envs
+      <<: *common-postgres-envs
+    networks:
+      - yearn-exporter
+    restart: on-failure
+    depends_on:
       - postgres
 
   sms-exporter:
