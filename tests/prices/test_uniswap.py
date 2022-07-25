@@ -1,9 +1,8 @@
 import pytest
 from brownie import chain
+from yearn.networks import Network
 from yearn.prices import magic
 from yearn.prices.uniswap import v1, v2, v3
-from yearn.networks import Network
-
 
 if chain.id == Network.Mainnet:
     V1_TOKENS = [
@@ -39,23 +38,28 @@ if chain.id == Network.Mainnet:
 @pytest.mark.parametrize('token', V1_TOKENS)
 def test_uniswap_v1(token):
     price = v1.uniswap_v1.get_price(token)
-    alt_price = magic.get_price(token)
-    print(token, price, alt_price)
-    # check if price is within 5% range
-    assert price == pytest.approx(alt_price, rel=5e-2)
+    print(token, price)
+    assert price
 
 
 @pytest.mark.parametrize('token', V2_TOKENS)
 def test_uniswap_v2(token):
     price = v2.uniswap_v2.get_price(token)
-    alt_price = magic.get_price(token)
-    print(token, price, alt_price)
-    assert price == pytest.approx(alt_price, rel=5e-2)
+    print(token, price)
+    assert price
 
 
 @pytest.mark.parametrize('token', V2_TOKENS)
 def test_uniswap_v3(token):
     price = v3.uniswap_v3.get_price(token)
-    alt_price = magic.get_price(token)
-    print(token, price, alt_price)
-    assert price == pytest.approx(alt_price, rel=5e-2)
+    print(token, price)
+    assert price
+
+def test_liquidity_based_market_selector():
+    token, v2_block, v3_block = {
+        Network.Mainnet:    ('',0,0),
+        Network.Arbitrum:   ('',0,0),
+    }[chain.id]
+
+    assert magic.get_price(token, v2_block) == v2.uniswap_v2.get_price(token, v2_block)
+    assert magic.get_price(token, v3_block) == v3.uniswap_v3.get_price(token, v3_block)

@@ -14,6 +14,16 @@ from yearn.outputs.postgres.utils import last_recorded_block
 from yearn.utils import contract, is_contract
 from yearn.v2.registry import Registry
 
+ZAP_CONTRACT_BUILD_NAMES = [
+    "yVault_ZapInOut_General_V1_5",
+    "yVault_ZapIn_V2",
+    "yVault_ZapIn_V2_0_1",
+    "yVault_ZapIn_V3",
+    "yVault_ZapIn_V4",
+    "yVault_ZapIn_V5",
+    "yVault_ZapIn_V5_1",
+]
+
 
 @db_session
 def main():
@@ -57,7 +67,14 @@ def main():
         if build_name == 'TrustedVaultMigrator'
     ]
 
-    excluded_addresses = set(strategies_for_included_vaults + migrators)
+    zap_contracts = [
+        address
+        for address, build_name
+        in contract_depositor_build_names.items()
+        if build_name in ZAP_CONTRACT_BUILD_NAMES
+    ]
+
+    excluded_addresses = set(strategies_for_included_vaults + migrators + zap_contracts)
     included_addresses = depositors - excluded_addresses
 
     included_contract_depositor_build_names = {
