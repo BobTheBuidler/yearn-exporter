@@ -158,6 +158,12 @@ def contract(address: Address) -> Contract:
                 c = _contract(address)
                 return _squeeze(c)
             except (AssertionError, CompilerError) as e:
+                dont_retry = [
+                    '"basefee" is not supported by the VM version.',
+                    "Stack too deep",
+                ]
+                if any(err in str(e) for err in dont_retry):
+                    raise
                 if failed_attempts == 10:
                     raise
                 logger.warning(e)
