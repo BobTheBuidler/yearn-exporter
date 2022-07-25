@@ -1,3 +1,4 @@
+import logging
 from brownie import chain
 from yearn.cache import memory
 from yearn.constants import BTC_LIKE, WRAPPED_GAS_COIN
@@ -30,6 +31,12 @@ INTL_STABLECOINS = {
         '0xC581b735A1688071A1746c968e0798D642EDE491',  # EURT
         '0xdB25f211AB05b1c97D595516F45794528a807ad8',  # EURS
         '0x96E61422b6A9bA0e068B6c5ADd4fFaBC6a4aae27',  # ibEUR
+        '0x269895a3dF4D73b077Fc823dD6dA1B95f72Aaf9B',  # sKRW
+        '0x3F1B0278A9ee595635B61817630cC19DE792f506',  # sAUD
+        '0x97fe22E7341a0Cd8Db6F6C021A24Dc8f4DAD855F',  # sGBP
+        '0xF6b1C627e95BFc3c1b4c9B825a032Ff0fBf3e07d',  # sJPY
+        '0x0F83287FF768D1c1e17a42F44d644D7F22e8ee1d',  # sCHF
+        '0x269895a3dF4D73b077Fc823dD6dA1B95f72Aaf9B',  # sKRW
     },
     Network.Fantom: {
         '',  #
